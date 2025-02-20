@@ -1,15 +1,11 @@
 "use client";
 import useFetch from "@/hooks/useFetch";
 import { Devs } from "@/interface/devs";
-import { baseUrl } from "@/utils/url";
-import axios from "axios";
 import Link from "next/link";
-import { useEffect } from "react";
 import { TiTick } from "react-icons/ti";
 
 function Developers() {
-  
-  const {data} = useFetch<Devs[]>("profile");
+  const { data } = useFetch<Devs[]>("profile");
   console.log(data);
 
   return (

@@ -12,7 +12,7 @@ function useFetch<T>(url: string) {
       setLoading(true);
       let res = await axios.get(baseUrl + url);
       console.log(res.data);
-      setData(res.data)
+      setData(res.data);
     } catch (error: any) {
       setError(error.message);
     } finally {
