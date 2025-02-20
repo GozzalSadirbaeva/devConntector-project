@@ -1,0 +1,18 @@
+.bg-img2 {
+    background-image: url(/imagee3.jpg);
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+  }
+  
+  .bg-img2::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Adjust opacity here */
+  }
+  
