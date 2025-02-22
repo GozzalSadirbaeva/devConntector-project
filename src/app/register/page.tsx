@@ -23,7 +23,7 @@ function Register() {
 
   return (
     <div className="flex gap-[130px] max-w-[1440px] w-full mx-auto my-0">
-      <div className="">
+      <div>
         <img src="/sign9.avif" alt="" className="pl-20" />
       </div>
       <div className="bg-[#7ba1c392] px-10 py-3 rounded-lg mt-20 mb-10 pt-8 mr-20 ">

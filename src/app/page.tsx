@@ -7,9 +7,7 @@ function Home() {
     router.push("/dashboard");
   }
   return (
-    <div>
-
-
+    <>
       <div className="bg-img2 min-h-screen flex justify-center items-center">
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="relative bg-[#ffffff6c] p-10 py-20 text-center rounded-lg shadow-lg z-10">
@@ -36,7 +34,7 @@ function Home() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

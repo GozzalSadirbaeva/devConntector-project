@@ -6,7 +6,6 @@ import { TiTick } from "react-icons/ti";
 
 function Developers() {
   const { data } = useFetch<Devs[]>("profile");
-  console.log(data);
 
   return (
     <div className="px-16">
@@ -18,7 +17,7 @@ function Developers() {
       </h2>
 
       <div className="my-6">
-        {data?.length > 0 ? (
+        {data?.length ? (
           <ul className="space-y-4">
             {data?.map((developer) => (
               <li
@@ -46,7 +45,7 @@ function Developers() {
                       <i className="text-lg">{developer.location}</i>
                     )}
                     <button className="w-[140px] py-2 bg-[#0f3352] text-white rounded-md ">
-                      <Link href={`/developers/${developer._id}`}>
+                      <Link href={`/profile/${developer._id}`}>
                         View Profile
                       </Link>
                     </button>
