@@ -9,9 +9,9 @@ import { useState } from "react";
 
 const CreateProfile = () => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string>("* Select Professional Status");
-  const [status, setStatus] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState("* Select Professional Status");
+  const [status, setStatus] = useState("");
   const [twitter, setTwitter] = useState<string>("");
   const [facebook, setFacebook] = useState<string>("");
   const [youtube, setYoutube] = useState<string>("");
@@ -38,11 +38,11 @@ const CreateProfile = () => {
     { value: "other", label: "Other" },
   ];
 
-  // const onchange = (
-  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  // ) => {
-  //   setProfileData({ ...profileData, [e.target.name]: e.target.value });
-  // };
+  const onchange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setProfileData({ ...profileData, [e.target.name]: e.target.value });
+  };
 
   const createProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,10 +67,10 @@ const CreateProfile = () => {
   return (
     <div className="px-16 pb-10">
       <h1 className="font-bold text-[50px] leading-[60px] text-[#0f3352] pt-8">
-        Create Your Profile
+      Edit Your Profile
       </h1>
       <h2 className="text-[#333333] text-2xl py-5 ">
-        Let's get some information to make your profile stand out!
+        Add some changes to your profile
       </h2>
 
       <form onSubmit={createProfile}>

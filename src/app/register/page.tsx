@@ -6,19 +6,35 @@ import { useEffect, useState } from "react";
 function Register() {
   const route = useRouter();
   const { loading, register, error } = useAuth();
-  const [email, setEmail] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     if (typeof window !== "undefined" && localStorage.getItem("token")) {
       route.push("/dashboard");
     }
-  }, []);
+  }, [route]);
 
-  const onSubmits = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await register(name, email, password);
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const response = await register(name, email, password);
+      // if (response && !error) {
+      //   localStorage.setItem("authMethod", "register");
+      //   route.push("/dashboard");
+      // }
+      console.log(response,"kkkkkkkkkkkkkkkkkkkkkk")
+    } catch (err) {
+      console.error("Registration failed:", err);
+    }
   };
 
   return (
@@ -33,30 +49,31 @@ function Register() {
         <p className="text-center pb-3 text-lg text-[#0f3352]">
           Create Your Account
         </p>
-        <form
-          action=""
-          onSubmit={onSubmits}
-          className="flex flex-col gap-3 items-center "
-        >
+        <form onSubmit={onSubmit} className="flex flex-col gap-3 items-center">
           <input
+            value={name}
             onChange={(e) => setName(e.target.value)}
             type="text"
             placeholder="Name"
             className="px-2 py-2 rounded-lg outline-none w-[300px]"
           />
           <input
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
-            type="text"
+            type="email"
             placeholder="Email"
             className="px-2 py-2 rounded-lg outline-none w-[300px]"
           />
           <input
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Password"
             className="px-2 py-2 rounded-lg outline-none w-[300px]"
           />
           <input
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             type="password"
             placeholder="Confirm password"
             className="px-2 py-2 rounded-lg outline-none w-[300px]"
@@ -64,17 +81,18 @@ function Register() {
           <button
             type="submit"
             className="px-4 py-2 bg-[#0f3352] text-white rounded-md mt-3"
+            disabled={loading}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
           <p className="text-[#0f3352]">
-            Already have an account? {""}
+            Already have an account?{" "}
             <span
               onClick={() => route.push("/login")}
-              className="underline cursor-pointer "
+              className="underline cursor-pointer"
             >
               Sign In
-            </span>{" "}
+            </span>
           </p>
         </form>
       </div>

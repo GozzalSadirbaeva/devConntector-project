@@ -1,11 +1,12 @@
 "use client";
 import useFetch from "@/hooks/useFetch";
 import { Devs } from "@/interface/devs";
+import { DeveloperInterface } from "@/interface/user";
 import Link from "next/link";
 import { TiTick } from "react-icons/ti";
 
 function Developers() {
-  const { data } = useFetch<Devs[]>("profile");
+  const { data } = useFetch<DeveloperInterface[]>("profile");
 
   return (
     <div className="px-16">
@@ -19,7 +20,7 @@ function Developers() {
       <div className="my-6">
         {data?.length ? (
           <ul className="space-y-4">
-            {data?.map((developer) => (
+            {data?.map((developer: DeveloperInterface) => (
               <li
                 key={developer._id}
                 className="p-4 pr-20 border rounded-md shadow-sm bg-white flex justify-between"
@@ -27,15 +28,15 @@ function Developers() {
                 <div className="flex gap-10">
                   <div className="py-6">
                     <img
-                      src={developer.user.avatar}
-                      alt={developer.user.name}
+                      src={developer?.user?.avatar}
+                      alt={developer?.user?.name}
                       className="w-[150px] rounded-full"
                     />
                   </div>
 
                   <div className="py-6 flex flex-col gap-3">
                     <h3 className="font-bold text-2xl">
-                      {developer.user.name}
+                      {developer?.user?.name}
                     </h3>
                     <p className="text-lg">
                       {developer.status}{" "}
@@ -44,15 +45,17 @@ function Developers() {
                     {developer.location && (
                       <i className="text-lg">{developer.location}</i>
                     )}
-                    <button className="w-[140px] py-2 bg-[#0f3352] text-white rounded-md ">
-                      <Link href={`/profile/${developer._id}`}>
-                        View Profile
-                      </Link>
-                    </button>
+                    {developer?.user?._id && (
+                      <button className="w-[140px] py-2 bg-[#0f3352] text-white rounded-md">
+                        <Link href={`/developers/${developer?.user?._id}`}>
+                          View Profile
+                        </Link>
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="py-6">
-                  {developer.skills.map((skill, index) => (
+                  {developer?.skills?.map((skill, index) => (
                     <p
                       key={index}
                       className="text-[#17a2b8] text-lg flex items-center gap-3"

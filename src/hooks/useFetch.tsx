@@ -10,11 +10,17 @@ function useFetch<T>(url: string) {
     try {
       setError("");
       setLoading(true);
-      let res = await axios.get(baseUrl + url);
-      console.log(res.data);
+      let res = await axios.get(baseUrl + url, {
+        headers: {
+          "x-auth-token": `${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(res);
       setData(res.data);
     } catch (error: any) {
-      setError(error.message);
+      setError(error);
     } finally {
       setLoading(false);
     }
