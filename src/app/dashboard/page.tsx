@@ -1,18 +1,88 @@
 "use client";
 import useFetch from "@/hooks/useFetch";
+import { baseUrl } from "@/utils/url";
+import axios from "axios";
 import Link from "next/link";
 import { FaBriefcase, FaGraduationCap, FaUserEdit } from "react-icons/fa";
+import { useState, useEffect } from "react";
+
+interface Experience {
+  _id: string;
+  company: string;
+  title: string;
+  years: string;
+}
+
+interface Education {
+  _id: string;
+  school: string;
+  degree: string;
+  years: string;
+}
 
 interface User {
   name: string;
   email: string;
-  experience: { company: string; title: string; years: string }[];
-  education: { school: string; degree: string; years: string }[];
+  experience: Experience[];
+  education: Education[];
 }
 
 function Dashboard() {
   const { data, error } = useFetch<{ name: string }>("auth");
   const { data: profile, error: errorProfile } = useFetch<User>("profile/me");
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [educations, setEducations] = useState<Education[]>([]);
+
+  useEffect(() => {
+    if (profile?.experience) {
+      setExperiences(profile.experience);
+    }
+    if (profile?.education) {
+      setEducations(profile.education);
+    }
+  }, [profile]);
+
+  const deleteExperience = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      await axios.delete(`${baseUrl}profile/experience/${id}`, {
+        headers: {
+          "x-auth-token": token,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setExperiences(experiences.filter((exp) => exp._id !== id));
+    } catch (error) {
+      console.error("Error deleting experience:", error);
+    }
+  };
+
+  const deleteEducation = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+
+      await axios.delete(`${baseUrl}profile/education/${id}`, {
+        headers: {
+          "x-auth-token": token,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setEducations(educations.filter((edu) => edu._id !== id));
+    } catch (error) {
+      console.error("Error deleting education:", error);
+    }
+  };
 
   return (
     <div className="px-10 py-8">
@@ -22,59 +92,86 @@ function Dashboard() {
       </h2>
 
       {profile ? (
-        <div className="mt-6 space-x-4 flex">
-          <button className="px-4 py-2 border  rounded-lg ">
-            <Link href="/edit-profile" className="flex items-center"><FaUserEdit className="mr-2" /> Edit Profile</Link>
-          </button>
-          <button className="px-4 py-2  rounded-lg flex items-center border ">
-            <Link href="/add-experience" className="flex items-center"><FaBriefcase className="mr-2" /> Add Experience</Link>
-          </button>
-          <button className="px-4 py-2 border  rounded-lg flex items-center ">
-            <Link href="/add-education" className="flex items-center"><FaGraduationCap className="mr-2" /> Add Education</Link>
-          </button>
-          <div className="mt-8">
-        <h3 className="text-2xl font-semibold">Experience Credentials</h3>
-        <table className=" border mt-4">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="p-2">Company</th>
-              <th className="p-2">Title</th>
-              <th className="p-2">Years</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profile?.experience?.map((exp, index) => (
-              <tr key={index} className="border-t">
-                <td className="p-2">{exp.company}</td>
-                <td className="p-2">{exp.title}</td>
-                <td className="p-2">{exp.years}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        <div className="mt-6 space-x-4 flex flex-col">
+          <div className="flex">
+            <button className="px-4 py-2 border rounded-lg">
+              <Link href="/edit-profile" className="flex items-center">
+                <FaUserEdit className="mr-2" /> Edit Profile
+              </Link>
+            </button>
+            <button className="px-4 py-2 rounded-lg flex items-center border">
+              <Link href="/add-experience" className="flex items-center">
+                <FaBriefcase className="mr-2" /> Add Experience
+              </Link>
+            </button>
+            <button className="px-4 py-2 border rounded-lg flex items-center">
+              <Link href="/add-education" className="flex items-center">
+                <FaGraduationCap className="mr-2" /> Add Education
+              </Link>
+            </button>
+          </div>
 
-      <div className="mt-8">
-        <h3 className="text-2xl font-semibold">Education Credentials</h3>
-        <table className=" border mt-4">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="p-2">School</th>
-              <th className="p-2">Degree</th>
-              <th className="p-2">Years</th>
-            </tr>
-          </thead>
-          <tbody>
-            {profile?.education?.map((edu, index) => (
-              <tr key={index} className="border-t">
-                <td className="p-2">{edu.school}</td>
-                <td className="p-2">{edu.degree}</td>
-                <td className="p-2">{edu.years}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          <div className="mt-8">
+            <h3 className="text-2xl font-semibold">Experience Credentials</h3>
+            <table className="mt-4">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="p-2">Company</th>
+                  <th className="p-2">Title</th>
+                  <th className="p-2">Years</th>
+                  <th className="p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {experiences.map((exp) => (
+                  <tr key={exp._id}>
+                    <td className="p-2">{exp.company}</td>
+                    <td className="p-2">{exp.title}</td>
+                    <td className="p-2">{exp.years}</td>
+                    <td className="p-2">
+                      <button
+                        onClick={() => deleteExperience(exp._id)}
+                        className="px-2 py-1 bg-red-500 text-white rounded"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-8">
+            <h3 className="text-2xl font-semibold">Education Credentials</h3>
+            <table className=" mt-4">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="p-2">School</th>
+                  <th className="p-2">Degree</th>
+                  <th className="p-2">Years</th>
+                  <th className="p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {educations.map((edu) => (
+                  <tr key={edu._id} >
+                    <td className="p-2">{edu.school}</td>
+                    <td className="p-2">{edu.degree}</td>
+                    <td className="p-2">{edu.years}</td>
+                    <td className="p-2">
+                      <button
+                        onClick={() => deleteEducation(edu._id)}
+                        className="px-2 py-1 bg-red-500 text-white rounded"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         <div className="mt-4">
@@ -86,8 +183,6 @@ function Dashboard() {
           </button>
         </div>
       )}
-
-      
     </div>
   );
 }

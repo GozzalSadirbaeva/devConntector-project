@@ -1,31 +1,39 @@
 "use client";
 
+import useFetch from "@/hooks/useFetch";
 import { ProfileData } from "@/interface/profileData";
+import { DeveloperInterface } from "@/interface/user";
 import { baseUrl } from "@/utils/url";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const CreateProfile = () => {
+const EditProfile = () => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("* Select Professional Status");
-  const [status, setStatus] = useState("");
-  const [twitter, setTwitter] = useState<string>("");
-  const [facebook, setFacebook] = useState<string>("");
-  const [youtube, setYoutube] = useState<string>("");
-  const [linkedin, setLinkedin] = useState<string>("");
-  const [instagram, setInstagram] = useState<string>("");
-  const [company, setCompany] = useState<string>("");
-  const [website, setWebsite] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [skills, setSkills] = useState<string>("");
-  const [github, setGithub] = useState<string>("");
-  const [bio, setBio] = useState<string>("");
+  const {
+    data: profile,
+    error,
+    loading,
+  } = useFetch<DeveloperInterface>("profile/me");
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selected, setSelected] = useState<string | undefined>("");
+  const [status, setStatus] = useState<string | undefined>("");
+  const [twitter, setTwitter] = useState<string | undefined>("");
+  const [facebook, setFacebook] = useState<string | undefined>("");
+  const [youtube, setYoutube] = useState<string | undefined>("");
+  const [linkedin, setLinkedin] = useState<string | undefined>("");
+  const [instagram, setInstagram] = useState<string | undefined>("");
+  const [company, setCompany] = useState<string | undefined>("");
+  const [website, setWebsite] = useState<string | undefined>("");
+  const [location, setLocation] = useState<string | undefined>("");
+  const [skills, setSkills] = useState<string | undefined>("");
+  const [githubusername, setGithubusername] = useState<string | undefined>("");
+  const [bio, setBio] = useState<string | undefined>("");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   const [showSocialLinks, setShowSocialLinks] = useState(false);
+  console.log(profile);
 
   const options = [
     { value: "developer", label: "Developer" },
@@ -37,19 +45,22 @@ const CreateProfile = () => {
     { value: "intern", label: "Intern" },
     { value: "other", label: "Other" },
   ];
-
-  const onchange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setProfileData({ ...profileData, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    setStatus(profile?.status);
+    setCompany(profile?.company);
+    setSkills(profile?.skills);
+    setWebsite(profile?.website);
+    setLocation(profile?.location);
+    setGithubusername(profile?.githubusername);
+    setBio(profile?.bio);
+  }, [loading]);
 
   const createProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await axios.post(
         `${baseUrl}profile`,
-        { ...profileData, status },
+        { company, location, status, website, skills, githubusername, bio },
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
@@ -58,7 +69,9 @@ const CreateProfile = () => {
         }
       );
       console.log("Profile created:", res.data);
-      router.push("/dashboard");
+      if (res.status === 200) {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       console.error("Error creating profile:", error.response?.data || error);
     }
@@ -67,10 +80,10 @@ const CreateProfile = () => {
   return (
     <div className="px-16 pb-10">
       <h1 className="font-bold text-[50px] leading-[60px] text-[#0f3352] pt-8">
-      Edit Your Profile
+        Edit Profile
       </h1>
       <h2 className="text-[#333333] text-2xl py-5 ">
-        Add some changes to your profile
+        Let's get some information to make your profile stand out!
       </h2>
 
       <form onSubmit={createProfile}>
@@ -107,6 +120,7 @@ const CreateProfile = () => {
         <input
           type="text"
           value={company}
+          onChange={(e) => setCompany(e.target.value)}
           placeholder="Company"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -116,6 +130,7 @@ const CreateProfile = () => {
         <input
           type="text"
           value={website}
+          onChange={(e) => setWebsite(e.target.value)}
           placeholder="Website"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -125,6 +140,7 @@ const CreateProfile = () => {
         <input
           type="text"
           value={location}
+          onChange={(e) => setLocation(e.target.value)}
           placeholder="Location"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -134,6 +150,7 @@ const CreateProfile = () => {
         <input
           type="text"
           value={skills}
+          onChange={(e) => setSkills(e.target.value)}
           placeholder="Skills"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -142,7 +159,8 @@ const CreateProfile = () => {
         </label>
         <input
           type="text"
-          value={github}
+          value={githubusername}
+          onChange={(e) => setGithubusername(e.target.value)}
           placeholder="GitHub Username"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -153,6 +171,7 @@ const CreateProfile = () => {
         <textarea
           name="bio"
           value={bio}
+          onChange={(e) => setBio(e.target.value)}
           placeholder="Info about yourself"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         ></textarea>
@@ -174,46 +193,40 @@ const CreateProfile = () => {
             <div>
               <input
                 type="text"
-                // name={social.name}
                 value={twitter}
-                onChange={onchange}
+                onChange={(e) => setTwitter(e.target.value)}
                 placeholder="Twitter"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
               <input
                 type="text"
-                // name={social.name}
+                onChange={(e) => setFacebook(e.target.value)}
                 value={facebook}
-                onChange={onchange}
                 placeholder="Facebook"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
               <input
                 type="text"
-                // name={social.name}
                 value={youtube}
-                onChange={onchange}
+                onChange={(e) => setYoutube(e.target.value)}
                 placeholder="Youtube"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
               <input
                 type="text"
-                // name={social.name}
+                onChange={(e) => setLinkedin(e.target.value)}
                 value={linkedin}
-                onChange={onchange}
                 placeholder="Linkedin"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
               <input
                 type="text"
-                // name={social.name}
+                onChange={(e) => setInstagram(e.target.value)}
                 value={instagram}
-                onChange={onchange}
                 placeholder="Instagram"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
             </div>
-            
           )}
         </div>
 
@@ -236,4 +249,4 @@ const CreateProfile = () => {
   );
 };
 
-export default CreateProfile;
+export default EditProfile;

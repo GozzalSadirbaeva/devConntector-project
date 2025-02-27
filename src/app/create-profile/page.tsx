@@ -10,7 +10,9 @@ import { useState } from "react";
 const CreateProfile = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selected, setSelected] = useState<string>("* Select Professional Status");
+  const [selected, setSelected] = useState<string>(
+    "* Select Professional Status"
+  );
   const [status, setStatus] = useState<string>("");
   const [twitter, setTwitter] = useState<string>("");
   const [facebook, setFacebook] = useState<string>("");
@@ -21,7 +23,7 @@ const CreateProfile = () => {
   const [website, setWebsite] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [skills, setSkills] = useState<string>("");
-  const [github, setGithub] = useState<string>("");
+  const [githubusername, setGithubusername] = useState<string>("");
   const [bio, setBio] = useState<string>("");
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
@@ -38,18 +40,12 @@ const CreateProfile = () => {
     { value: "other", label: "Other" },
   ];
 
-  // const onchange = (
-  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  // ) => {
-  //   setProfileData({ ...profileData, [e.target.name]: e.target.value });
-  // };
-
   const createProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await axios.post(
         `${baseUrl}profile`,
-        { ...profileData, status },
+        { company, location, status, website, skills, githubusername, bio },
         {
           headers: {
             "x-auth-token": localStorage.getItem("token"),
@@ -58,7 +54,9 @@ const CreateProfile = () => {
         }
       );
       console.log("Profile created:", res.data);
-      router.push("/dashboard");
+      if (res.status === 200) {
+        router.push("/dashboard");
+      }
     } catch (error: any) {
       console.error("Error creating profile:", error.response?.data || error);
     }
@@ -107,6 +105,7 @@ const CreateProfile = () => {
         <input
           type="text"
           value={company}
+          onChange={(e) => setCompany(e.target.value)}
           placeholder="Company"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -116,6 +115,7 @@ const CreateProfile = () => {
         <input
           type="text"
           value={website}
+          onChange={(e) => setWebsite(e.target.value)}
           placeholder="Website"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -125,6 +125,7 @@ const CreateProfile = () => {
         <input
           type="text"
           value={location}
+          onChange={(e) => setLocation(e.target.value)}
           placeholder="Location"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -134,6 +135,7 @@ const CreateProfile = () => {
         <input
           type="text"
           value={skills}
+          onChange={(e) => setSkills(e.target.value)}
           placeholder="Skills"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -142,7 +144,8 @@ const CreateProfile = () => {
         </label>
         <input
           type="text"
-          value={github}
+          value={githubusername}
+          onChange={(e) => setGithubusername(e.target.value)}
           placeholder="GitHub Username"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         />
@@ -153,6 +156,7 @@ const CreateProfile = () => {
         <textarea
           name="bio"
           value={bio}
+          onChange={(e) => setBio(e.target.value)}
           placeholder="Info about yourself"
           className="w-full border-2 border-[#000000a9] px-2 py-2 rounded-md text-xl"
         ></textarea>
@@ -174,46 +178,40 @@ const CreateProfile = () => {
             <div>
               <input
                 type="text"
-                // name={social.name}
                 value={twitter}
-                onChange={onchange}
+                onChange={(e) => setTwitter(e.target.value)}
                 placeholder="Twitter"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
               <input
                 type="text"
-                // name={social.name}
+                onChange={(e) => setFacebook(e.target.value)}
                 value={facebook}
-                onChange={onchange}
                 placeholder="Facebook"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
               <input
                 type="text"
-                // name={social.name}
                 value={youtube}
-                onChange={onchange}
+                onChange={(e) => setYoutube(e.target.value)}
                 placeholder="Youtube"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
               <input
                 type="text"
-                // name={social.name}
+                onChange={(e) => setLinkedin(e.target.value)}
                 value={linkedin}
-                onChange={onchange}
                 placeholder="Linkedin"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
               <input
                 type="text"
-                // name={social.name}
+                onChange={(e) => setInstagram(e.target.value)}
                 value={instagram}
-                onChange={onchange}
                 placeholder="Instagram"
                 className="w-full border-2 border-gray-400 px-3 py-2 rounded-md text-lg"
               />
             </div>
-            
           )}
         </div>
 

@@ -27,10 +27,6 @@ function Register() {
 
     try {
       const response = await register(name, email, password);
-      // if (response && !error) {
-      //   localStorage.setItem("authMethod", "register");
-      //   route.push("/dashboard");
-      // }
       console.log(response,"kkkkkkkkkkkkkkkkkkkkkk")
     } catch (err) {
       console.error("Registration failed:", err);

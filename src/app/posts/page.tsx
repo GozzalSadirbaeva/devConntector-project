@@ -1,5 +1,6 @@
 "use client";
 import { baseUrl } from "@/utils/url";
+import useFetch from "@/hooks/useFetch";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { AiFillLike, AiFillDislike } from "react-icons/ai";
@@ -10,6 +11,7 @@ interface Post {
   name: string;
   date: string;
   avatar?: string;
+  user: string;  
 }
 
 function Posts() {
@@ -17,6 +19,7 @@ function Posts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [createPost, setCreatePost] = useState<string>("");
+  const { data, error: err } = useFetch<{ _id: string; name: string }>("auth"); 
 
   const createNewPost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,11 +64,7 @@ function Posts() {
         setPosts(response.data);
       } catch (error: any) {
         console.error("Error fetching posts:", error);
-        setError(
-          error.response?.data?.message ||
-            error.message ||
-            "Failed to fetch posts."
-        );
+        setError(error.response?.data?.message || error.message || "Failed to fetch posts.");
       } finally {
         setLoading(false);
       }
@@ -74,12 +73,29 @@ function Posts() {
     fetchPosts();
   }, []);
 
-  if (loading)
-    return <div className="text-center text-lg font-semibold">Loading...</div>;
-  if (error)
-    return (
-      <div className="text-center text-red-500 font-semibold">{error}</div>
-    );
+  const deletePost = async (postId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Authentication token not found.");
+      }
+
+      await axios.delete(`${baseUrl}posts/${postId}`, {
+        headers: {
+          "x-auth-token": token,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setPosts(posts.filter((post) => post._id !== postId));
+    } catch (error: any) {
+      console.error("Error deleting post:", error);
+      setError(error.response?.data?.message || error.message || "Failed to delete post.");
+    }
+  };
+
+  if (loading) return <div className="text-center text-lg font-semibold">Loading...</div>;
+  if (error) return <div className="text-center text-red-500 font-semibold">{error}</div>;
 
   return (
     <div>
@@ -112,22 +128,13 @@ function Posts() {
           ) : (
             <ul className="space-y-4">
               {posts.map((post) => (
-                <li
-                  key={post._id}
-                  className="border rounded-lg p-4 shadow-md flex items-start gap-4 bg-white"
-                >
-                  <img
-                    src={post.avatar}
-                    alt={post.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
+                <li key={post._id} className="border rounded-lg p-4 shadow-md flex items-start gap-4 bg-white">
+                  <img src={post.avatar} alt={post.name} className="w-12 h-12 rounded-full object-cover" />
 
                   <div className="flex flex-col w-full">
                     <div className="flex justify-between items-center">
                       <h3 className="text-sm font-semibold">{post.name}</h3>
-                      <p className="text-gray-500 text-xs">
-                        {new Date(post.date).toLocaleDateString()}
-                      </p>
+                      <p className="text-gray-500 text-xs">{new Date(post.date).toLocaleDateString()}</p>
                     </div>
                     <p className="text-gray-700 mt-2">{post.text}</p>
 
@@ -141,6 +148,15 @@ function Posts() {
                       <button className="bg-[#14b8a6] text-white px-3 py-2 rounded-md text-sm">
                         Discussion
                       </button>
+
+                      {data?._id === post.user && (
+                        <button
+                          onClick={() => deletePost(post._id)}
+                          className="ml-auto bg-red-500 text-white px-3 py-2 rounded-md text-sm hover:bg-red-700"
+                        >
+                          Delete
+                        </button>
+                      )}
                     </div>
                   </div>
                 </li>
