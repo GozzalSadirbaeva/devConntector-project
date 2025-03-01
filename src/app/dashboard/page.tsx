@@ -87,11 +87,40 @@ function Dashboard() {
       console.error("Error deleting education:", error);
     }
   };
+  const deleteAccount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
+  
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete your account? This action cannot be undone!"
+      );
+      if (!confirmDelete) return;
+  
+      await axios.delete(`${baseUrl}profile`, {
+        headers: {
+          "x-auth-token": token,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      localStorage.removeItem("token"); 
+      window.location.href = "/login";
+    } catch (error) {
+      console.error( error);
+    }
+  };
+  
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
     return date.toISOString().split("T")[0]; 
   };
+  
+
 
   return (
     <div className="px-10 py-8">
@@ -182,6 +211,7 @@ function Dashboard() {
                 ))}
               </tbody>
             </table>
+            <button onClick={() => deleteAccount()} className="text-white bg-red-500 px-3 py-1 rounded-lg mt-3">Delete Account</button>
           </div>
         </div>
       ) : (

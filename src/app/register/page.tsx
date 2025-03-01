@@ -26,12 +26,12 @@ function Register() {
       return;
     }
 
-    // try {
-    //   const response = await register(name, email, password);
-    //   // console.log(response, "kkkkkkkkkkkkkkkkkkkkkk");
-    // } catch (err) {
-    //   console.error("Registration failed:", err);
-    // }
+    try {
+      const response = await register(name, email, password);
+      // console.log(response, "kkkkkkkkkkkkkkkkkkkkkk");
+    } catch (err) {
+      console.error("Registration failed:", err);
+    }
   };
 
   return (
