@@ -33,7 +33,7 @@ const EditProfile = () => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   const [showSocialLinks, setShowSocialLinks] = useState(false);
-  console.log(profile);
+  // console.log(profile);
 
   const options = [
     { value: "developer", label: "Developer" },
@@ -68,7 +68,7 @@ const EditProfile = () => {
           },
         }
       );
-      console.log("Profile created:", res.data);
+      // console.log("Profile created:", res.data);
       if (res.status === 200) {
         router.push("/dashboard");
       }

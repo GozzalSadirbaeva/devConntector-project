@@ -12,10 +12,11 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("token")) {
+    const token = localStorage.getItem("token");
+    if (token) {
       route.push("/dashboard");
     }
-  }, [route]);
+  }, []);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +28,7 @@ function Register() {
 
     try {
       const response = await register(name, email, password);
-      console.log(response,"kkkkkkkkkkkkkkkkkkkkkk")
+      // console.log(response, "kkkkkkkkkkkkkkkkkkkkkk");
     } catch (err) {
       console.error("Registration failed:", err);
     }

@@ -15,7 +15,7 @@ const DetailPage = () => {
       try {
         const res = await axios.get(`${baseUrl}profile/user/${developerId}`);
         setInfo(res.data);
-        console.log(res);
+        // console.log(res);
         
       } catch (error) {
         console.error("Error fetching user data:", error);

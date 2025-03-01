@@ -53,7 +53,7 @@ const CreateProfile = () => {
           },
         }
       );
-      console.log("Profile created:", res.data);
+      // console.log("Profile created:", res.data);
       if (res.status === 200) {
         router.push("/dashboard");
       }

@@ -17,7 +17,7 @@ function useFetch<T>(url: string) {
         },
       });
 
-      console.log(res);
+      // console.log(res);
       setData(res.data);
     } catch (error: any) {
       setError(error);

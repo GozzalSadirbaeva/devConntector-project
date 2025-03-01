@@ -74,7 +74,7 @@ function Posts() {
 
     fetchPosts();
   }, []);
-console.log(posts);
+// console.log(posts);
 
   const deletePost = async (postId: string) => {
     try {
