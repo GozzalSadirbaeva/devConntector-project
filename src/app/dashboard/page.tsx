@@ -11,6 +11,8 @@ interface Experience {
   company: string;
   title: string;
   years: string;
+  from: number;
+  to: number;
 }
 
 interface Education {
@@ -18,6 +20,8 @@ interface Education {
   school: string;
   degree: string;
   years: string;
+  from: number;
+  to:number
 }
 
 interface User {
@@ -84,6 +88,11 @@ function Dashboard() {
     }
   };
 
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toISOString().split("T")[0]; 
+  };
+
   return (
     <div className="px-10 py-8">
       <h1 className="font-bold text-[50px] text-[#0f3352]">Dashboard</h1>
@@ -127,7 +136,8 @@ function Dashboard() {
                   <tr key={exp._id}>
                     <td className="p-2">{exp.company}</td>
                     <td className="p-2">{exp.title}</td>
-                    <td className="p-2">{exp.years}</td>
+                    <td className="p-2">{formatDate(exp.from)} - {exp.to ? formatDate(exp.to) : "Present"}</td>
+
                     <td className="p-2">
                       <button
                         onClick={() => deleteExperience(exp._id)}
@@ -158,7 +168,8 @@ function Dashboard() {
                   <tr key={edu._id} >
                     <td className="p-2">{edu.school}</td>
                     <td className="p-2">{edu.degree}</td>
-                    <td className="p-2">{edu.years}</td>
+                    <td className="p-2">{formatDate(edu.from)} - {edu.to ? formatDate(edu.to) : "Present"}</td>
+
                     <td className="p-2">
                       <button
                         onClick={() => deleteEducation(edu._id)}

@@ -14,8 +14,6 @@ const AddEducation = () => {
   const [fieldofstudy, setFieldofstudy] = useState<string>("");
   const [from, setFrom] = useState<string>("");
   const [to, setTo] = useState<string>("");
-  // const [description, setDescription] = useState<string>("");
-  // const [currentJob, setCurrentJob] = useState<boolean>(false);
 
   const addeducation = async (e: React.FormEvent) => {
     e.preventDefault();

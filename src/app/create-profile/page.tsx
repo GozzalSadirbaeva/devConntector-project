@@ -25,7 +25,6 @@ const CreateProfile = () => {
   const [skills, setSkills] = useState<string>("");
   const [githubusername, setGithubusername] = useState<string>("");
   const [bio, setBio] = useState<string>("");
-  // const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   const [showSocialLinks, setShowSocialLinks] = useState(false);
 

@@ -1,5 +1,4 @@
 "use client";
-import useFetch from "@/hooks/useFetch";
 import { baseUrl } from "@/utils/url";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
@@ -32,31 +31,31 @@ const DetailPage: React.FC = () => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchPostData = async () => {
-      try {
-        const res = await axios.get(`${baseUrl}posts/${postId}`, {
-          headers: {
-            "x-auth-token": localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        });
-        setInfo(res.data);
-        setComments(res.data.comments || []);
-      } catch (error) {
-        console.error("Error fetching post data:", error);
-      }
-    };
+  const fetchPostData = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}posts/${postId}`, {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
+      });
+      setInfo(res.data);
+      setComments(res.data.comments || []);
+    } catch (error) {
+      console.error("Error fetching post data:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchPostData();
-  }, [postId]);
+  }, []);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!comment.trim()) return;
 
     try {
-      const res = await axios.post(
+      await axios.post(
         `${baseUrl}posts/comment/${postId}`,
         { text: comment },
         {
@@ -67,8 +66,8 @@ const DetailPage: React.FC = () => {
         }
       );
 
-      setComments([res.data, ...comments]);
       setComment("");
+      fetchPostData(); 
     } catch (error) {
       console.error("Error adding comment:", error);
     }
@@ -83,7 +82,7 @@ const DetailPage: React.FC = () => {
         },
       });
 
-      setComments(comments.filter((c) => c._id !== commentId));
+      fetchPostData(); 
     } catch (error) {
       console.error("Error deleting comment:", error);
     }
@@ -171,14 +170,12 @@ const DetailPage: React.FC = () => {
                 Posted on {new Date(c.date).toLocaleDateString()}
               </p>
               <p className="text-gray-700 mt-2">{c.text}</p>
-              {/* {data?._id === c.name && (
-               )} */}
-                <button
-                  onClick={() => delComment(c._id)}
-                  className="text-white bg-red-500 px-3 py-1 rounded-lg mt-2"
-                >
-                  Delete
-                </button>
+              <button
+                onClick={() => delComment(c._id)}
+                className="text-white bg-red-500 px-3 py-1 rounded-lg mt-2"
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
