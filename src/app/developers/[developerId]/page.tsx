@@ -15,6 +15,8 @@ const DetailPage = () => {
       try {
         const res = await axios.get(`${baseUrl}profile/user/${developerId}`);
         setInfo(res.data);
+        console.log(res);
+        
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -31,9 +33,11 @@ const DetailPage = () => {
 
       try {
         const resgithub = await axios.get(
-          `${baseUrl}profile/github/${info.githubusername}`
+          `${baseUrl}profile/github/${info?.githubusername}`
         );
         setGithub(resgithub.data);
+        console.log(resgithub,"dcsddffsdddddddddddddddddddddd f");
+        
       } catch (error) {
         console.error("Error fetching GitHub data:", error);
       }
@@ -41,6 +45,7 @@ const DetailPage = () => {
 
     fetchGithubData();
   }, [info?.githubusername]);
+// console.log(github);
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-6">
@@ -52,9 +57,9 @@ const DetailPage = () => {
         />
 
         <h2 className="text-2xl font-bold mt-4">{info?.user?.name}</h2>
-        <h3 className="text-lg text-gray-600">{info?.company}</h3>
-        <p className="text-gray-500 mt-2">{info?.location}</p>
-        <p className="text-gray-700 text-center mt-2 px-4">{info?.bio}</p>
+        <h3 className="text-lg text-gray-600">Company: {info?.company}</h3>
+        <p className="text-gray-500 mt-2">Location: {info?.location}</p>
+        <p className="text-gray-700 text-center mt-2 px-4">Bio: {info?.bio}</p>
 
         {info?.skills && (
           <div className="mt-4">
@@ -77,9 +82,9 @@ const DetailPage = () => {
             GitHub Repositories
           </h3>
 
-          {github && github.length > 0 ? (
+          {Array.isArray(github) ? (
             <div className="mt-4 space-y-4">
-              {github.map((repo) => (
+              {github?.map((repo) => (
                 <div
                   key={repo.id}
                   className="border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition"

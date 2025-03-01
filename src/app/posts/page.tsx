@@ -1,9 +1,11 @@
 "use client";
-import { baseUrl } from "@/utils/url";
 import useFetch from "@/hooks/useFetch";
+import { baseUrl } from "@/utils/url";
 import axios from "axios";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AiFillLike, AiFillDislike } from "react-icons/ai";
+import { AiFillDislike, AiFillLike } from "react-icons/ai";
+
 
 interface Post {
   _id: string;
@@ -72,6 +74,7 @@ function Posts() {
 
     fetchPosts();
   }, []);
+console.log(posts);
 
   const deletePost = async (postId: string) => {
     try {
@@ -96,6 +99,36 @@ function Posts() {
 
   if (loading) return <div className="text-center text-lg font-semibold">Loading...</div>;
   if (error) return <div className="text-center text-red-500 font-semibold">{error}</div>;
+
+  const onclickLike = async (postId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.put(
+        `${baseUrl}posts/like/${postId}`,
+        {},
+        {
+          headers: { "x-auth-token": token },
+        }
+      );
+    } catch (error) {
+      console.error( error);
+    }
+  };
+
+  const onclickDislike = async (postId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `${baseUrl}posts/unlike/${postId}`,
+        {
+          headers: { "x-auth-token": token },
+        }
+      );
+    } catch (error) {
+      console.error( error);
+    }
+  };
 
   return (
     <div>
@@ -129,7 +162,7 @@ function Posts() {
             <ul className="space-y-4">
               {posts.map((post) => (
                 <li key={post._id} className="border rounded-lg p-4 shadow-md flex items-start gap-4 bg-white">
-                  <img src={post.avatar} alt={post.name} className="w-12 h-12 rounded-full object-cover" />
+                  <img src={post?.avatar} alt={post.name} className="w-12 h-12 rounded-full object-cover" />
 
                   <div className="flex flex-col w-full">
                     <div className="flex justify-between items-center">
@@ -139,14 +172,17 @@ function Posts() {
                     <p className="text-gray-700 mt-2">{post.text}</p>
 
                     <div className="flex items-center gap-2 mt-2">
-                      <button className="flex items-center gap-1 bg-[#1e293b] text-white p-2 rounded-md text-sm hover:bg-gray-700">
+                      <button onClick={() => onclickLike(post._id)} className="flex items-center gap-1 bg-[#1e293b] text-white p-2 rounded-md text-sm hover:bg-gray-700">
                         <AiFillLike /> Like
                       </button>
-                      <button className="flex items-center gap-1 bg-[#1e293b] text-white p-2 rounded-md text-sm hover:bg-gray-700">
+                      <button onClick={() => onclickDislike(post._id)} className="flex items-center gap-1 bg-[#1e293b] text-white p-2 rounded-md text-sm hover:bg-gray-700">
                         <AiFillDislike /> Dislike
                       </button>
                       <button className="bg-[#14b8a6] text-white px-3 py-2 rounded-md text-sm">
+                      
+                        <Link href={`/posts/${post?._id}`}>
                         Discussion
+                        </Link>
                       </button>
 
                       {data?._id === post.user && (
