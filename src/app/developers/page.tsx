@@ -1,6 +1,5 @@
 "use client";
 import useFetch from "@/hooks/useFetch";
-import { Devs } from "@/interface/devs";
 import { DeveloperInterface } from "@/interface/user";
 import Link from "next/link";
 import { TiTick } from "react-icons/ti";

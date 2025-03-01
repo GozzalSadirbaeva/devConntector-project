@@ -13,7 +13,6 @@ const EditProfile = () => {
   const router = useRouter();
   const {
     data: profile,
-    error,
     loading,
   } = useFetch<DeveloperInterface>("profile/me");
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -30,7 +29,6 @@ const EditProfile = () => {
   const [skills, setSkills] = useState<string | undefined>("");
   const [githubusername, setGithubusername] = useState<string | undefined>("");
   const [bio, setBio] = useState<string | undefined>("");
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   const [showSocialLinks, setShowSocialLinks] = useState(false);
   // console.log(profile);
@@ -72,7 +70,7 @@ const EditProfile = () => {
       if (res.status === 200) {
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating profile:", error.response?.data || error);
     }
   };
@@ -83,7 +81,7 @@ const EditProfile = () => {
         Edit Profile
       </h1>
       <h2 className="text-[#333333] text-2xl py-5 ">
-        Let's get some information to make your profile stand out!
+        Lets get some information to make your profile stand out!
       </h2>
 
       <form onSubmit={createProfile}>

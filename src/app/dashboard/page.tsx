@@ -28,8 +28,8 @@ interface User {
 }
 
 function Dashboard() {
-  const { data, error } = useFetch<{ name: string }>("auth");
-  const { data: profile, error: errorProfile } = useFetch<User>("profile/me");
+  const { data } = useFetch<{ name: string }>("auth");
+  const { data: profile} = useFetch<User>("profile/me");
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [educations, setEducations] = useState<Education[]>([]);
 

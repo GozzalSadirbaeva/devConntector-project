@@ -14,7 +14,7 @@ function useAuth() {
       setError("");
       let res = await axios.get(baseUrl + "auth");
       setUser(res.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
     } finally {
       setLoading(false);
     }
@@ -38,7 +38,7 @@ function useAuth() {
         localStorage.setItem("token", res?.data?.token);
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setError(error.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
@@ -60,7 +60,7 @@ function useAuth() {
         localStorage.setItem("token", res?.data?.token);
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setError(error.response?.data?.message || "Register failed");
     } finally {
       setLoading(false);

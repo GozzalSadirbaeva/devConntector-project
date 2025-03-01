@@ -29,7 +29,6 @@ const DetailPage: React.FC = () => {
   const [comment, setComment] = useState<string>("");
   const [info, setInfo] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const { data, error: err } = useFetch<{ _id: string; name: string }>("auth");
 
   const router = useRouter();
 

@@ -25,7 +25,7 @@ const CreateProfile = () => {
   const [skills, setSkills] = useState<string>("");
   const [githubusername, setGithubusername] = useState<string>("");
   const [bio, setBio] = useState<string>("");
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  // const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   const [showSocialLinks, setShowSocialLinks] = useState(false);
 
@@ -57,7 +57,7 @@ const CreateProfile = () => {
       if (res.status === 200) {
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating profile:", error.response?.data || error);
     }
   };
@@ -68,7 +68,7 @@ const CreateProfile = () => {
         Create Your Profile
       </h1>
       <h2 className="text-[#333333] text-2xl py-5 ">
-        Let's get some information to make your profile stand out!
+        Lets get some information to make your profile stand out!
       </h2>
 
       <form onSubmit={createProfile}>

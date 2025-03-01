@@ -21,7 +21,7 @@ function Posts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [createPost, setCreatePost] = useState<string>("");
-  const { data, error: err } = useFetch<{ _id: string; name: string }>("auth"); 
+  const { data } = useFetch<{ _id: string; name: string }>("auth"); 
 
   const createNewPost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +43,7 @@ function Posts() {
       );
       setPosts([response.data, ...posts]);
       setCreatePost("");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating post:", error);
       setError(error.response?.data?.message || error.message || "Failed to create post.");
     }
@@ -64,7 +64,7 @@ function Posts() {
           },
         });
         setPosts(response.data);
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Error fetching posts:", error);
         setError(error.response?.data?.message || error.message || "Failed to fetch posts.");
       } finally {
@@ -91,7 +91,7 @@ function Posts() {
       });
 
       setPosts(posts.filter((post) => post._id !== postId));
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting post:", error);
       setError(error.response?.data?.message || error.message || "Failed to delete post.");
     }

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 function Register() {
   const route = useRouter();
-  const { loading, register, error } = useAuth();
+  const { loading, register } = useAuth();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -26,12 +26,12 @@ function Register() {
       return;
     }
 
-    try {
-      const response = await register(name, email, password);
-      // console.log(response, "kkkkkkkkkkkkkkkkkkkkkk");
-    } catch (err) {
-      console.error("Registration failed:", err);
-    }
+    // try {
+    //   const response = await register(name, email, password);
+    //   // console.log(response, "kkkkkkkkkkkkkkkkkkkkkk");
+    // } catch (err) {
+    //   console.error("Registration failed:", err);
+    // }
   };
 
   return (

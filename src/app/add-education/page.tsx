@@ -14,8 +14,8 @@ const AddEducation = () => {
   const [fieldofstudy, setFieldofstudy] = useState<string>("");
   const [from, setFrom] = useState<string>("");
   const [to, setTo] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [currentJob, setCurrentJob] = useState<boolean>(false);
+  // const [description, setDescription] = useState<string>("");
+  // const [currentJob, setCurrentJob] = useState<boolean>(false);
 
   const addeducation = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +34,7 @@ const AddEducation = () => {
       if (res.status === 200) {
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error.response?.data || error);
     }
   };

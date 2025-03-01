@@ -49,7 +49,7 @@ function Login() {
               {loading ? "Loading... " : "Submit"}
             </button>
             <p className="text-[#0f3352]">
-              Don't have an account?{" "}
+              Dont have an account?{" "}
               <span
                 onClick={() => route.push("/register")}
                 className="underline cursor-pointer "

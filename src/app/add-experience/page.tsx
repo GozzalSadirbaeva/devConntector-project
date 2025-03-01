@@ -31,7 +31,7 @@ const AddExperience = () => {
       if (res.status === 200) {
         router.push("/dashboard");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error( error.response?.data || error);
     }
   };
