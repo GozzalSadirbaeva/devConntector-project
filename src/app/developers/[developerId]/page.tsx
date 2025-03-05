@@ -1,7 +1,8 @@
 "use client";
 import { DeveloperInterface, Repo } from "@/interface/user";
-import { baseUrl } from "@/utils/url";  
+import { baseUrl } from "@/utils/url";
 import axios from "axios";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -16,7 +17,6 @@ const DetailPage = () => {
         const res = await axios.get(`${baseUrl}profile/user/${developerId}`);
         setInfo(res.data);
         // console.log(res);
-        
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -36,8 +36,7 @@ const DetailPage = () => {
           `${baseUrl}profile/github/${info?.githubusername}`
         );
         setGithub(resgithub.data);
-        console.log(resgithub,"dcsddffsdddddddddddddddddddddd f");
-        
+        console.log(resgithub, "dcsddffsdddddddddddddddddddddd f");
       } catch (error) {
         console.error("Error fetching GitHub data:", error);
       }
@@ -45,14 +44,16 @@ const DetailPage = () => {
 
     fetchGithubData();
   }, [info?.githubusername]);
-// console.log(github);
+  // console.log(github);
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-6">
       <div className="bg-white shadow-lg rounded-xl p-6 flex flex-col items-center">
-        <img
-          src={info?.user?.avatar}
-          alt={info?.user?.name}
+        <Image
+          src={info?.user?.avatar || "/default-avatar.png"} 
+          alt={info?.user?.name || "User avatar"}
+          width={144} 
+          height={144}
           className="w-36 h-36 rounded-full border-4 border-gray-200"
         />
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { ProfileData } from "@/interface/profileData";
 import { baseUrl } from "@/utils/url";
 import axios from "axios";
 import Link from "next/link";

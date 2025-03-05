@@ -9,12 +9,15 @@ function useAuth() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+
   async function getMe() {
     try {
+      setLoading(true);
       setError("");
-      let res = await axios.get(baseUrl + "auth");
+      const res = await axios.get(baseUrl + "auth");
       setUser(res.data);
-    } catch (error: unknown) {
+    } catch (err) {
+      console.error("Fetching user failed:", err);
     } finally {
       setLoading(false);
     }
@@ -23,9 +26,11 @@ function useAuth() {
   useEffect(() => {
     getMe();
   }, []);
+
   async function login(email: string, password: string) {
     try {
-      let res = await axios.post(
+      setLoading(true);
+      const res = await axios.post(
         baseUrl + "auth",
         { email, password },
         {
@@ -38,8 +43,13 @@ function useAuth() {
         localStorage.setItem("token", res?.data?.token);
         router.push("/dashboard");
       }
-    } catch (error: unknown) {
-      setError(error.response?.data?.message || "Login failed");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Login failed");
+      } else {
+        setError("An unexpected error occurred");
+      }
+      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
@@ -47,7 +57,8 @@ function useAuth() {
 
   async function register(name: string, email: string, password: string) {
     try {
-      let res = await axios.post(
+      setLoading(true);
+      const res = await axios.post(
         baseUrl + "users",
         { name, email, password },
         {
@@ -60,13 +71,24 @@ function useAuth() {
         localStorage.setItem("token", res?.data?.token);
         router.push("/dashboard");
       }
-    } catch (error: unknown) {
-      setError(error.response?.data?.message || "Register failed");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Register failed");
+      } else {
+        setError("An unexpected error occurred");
+      }
+      console.error("Registration error:", err);
     } finally {
       setLoading(false);
     }
   }
-  function logOut() {}
+
+  function logOut() {
+    localStorage.removeItem("token");
+    setUser(null);
+    router.push("/");
+  }
+
   return { login, logOut, user, error, loading, register };
 }
 

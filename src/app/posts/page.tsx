@@ -2,10 +2,10 @@
 import useFetch from "@/hooks/useFetch";
 import { baseUrl } from "@/utils/url";
 import axios from "axios";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
-
 
 interface Post {
   _id: string;
@@ -13,7 +13,7 @@ interface Post {
   name: string;
   date: string;
   avatar?: string;
-  user: string;  
+  user: string;
 }
 
 function Posts() {
@@ -21,7 +21,7 @@ function Posts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [createPost, setCreatePost] = useState<string>("");
-  const { data } = useFetch<{ _id: string; name: string }>("auth"); 
+  const { data } = useFetch<{ _id: string; name: string }>("auth");
 
   const createNewPost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +45,11 @@ function Posts() {
       setCreatePost("");
     } catch (error: unknown) {
       console.error("Error creating post:", error);
-      setError(error.response?.data?.message || error.message || "Failed to create post.");
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to create post."
+      );
     }
   };
 
@@ -66,7 +70,11 @@ function Posts() {
         setPosts(response.data);
       } catch (error: unknown) {
         console.error("Error fetching posts:", error);
-        setError(error.response?.data?.message || error.message || "Failed to fetch posts.");
+        setError(
+          error.response?.data?.message ||
+            error.message ||
+            "Failed to fetch posts."
+        );
       } finally {
         setLoading(false);
       }
@@ -74,7 +82,7 @@ function Posts() {
 
     fetchPosts();
   }, []);
-// console.log(posts);
+  // console.log(posts);
 
   const deletePost = async (postId: string) => {
     try {
@@ -93,12 +101,20 @@ function Posts() {
       setPosts(posts.filter((post) => post._id !== postId));
     } catch (error: unknown) {
       console.error("Error deleting post:", error);
-      setError(error.response?.data?.message || error.message || "Failed to delete post.");
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to delete post."
+      );
     }
   };
 
-  if (loading) return <div className="text-center text-lg font-semibold">Loading...</div>;
-  if (error) return <div className="text-center text-red-500 font-semibold">{error}</div>;
+  if (loading)
+    return <div className="text-center text-lg font-semibold">Loading...</div>;
+  if (error)
+    return (
+      <div className="text-center text-red-500 font-semibold">{error}</div>
+    );
 
   const onclickLike = async (postId: string) => {
     try {
@@ -112,21 +128,18 @@ function Posts() {
         }
       );
     } catch (error) {
-      console.error( error);
+      console.error(error);
     }
   };
 
   const onclickDislike = async (postId: string) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.put(
-        `${baseUrl}posts/unlike/${postId}`,
-        {
-          headers: { "x-auth-token": token },
-        }
-      );
+      await axios.put(`${baseUrl}posts/unlike/${postId}`, {
+        headers: { "x-auth-token": token },
+      });
     } catch (error) {
-      console.error( error);
+      console.error(error);
     }
   };
 
@@ -161,28 +174,42 @@ function Posts() {
           ) : (
             <ul className="space-y-4">
               {posts.map((post) => (
-                <li key={post._id} className="border rounded-lg p-4 shadow-md flex items-start gap-4 bg-white">
-                  <img src={post?.avatar} alt={post.name} className="w-12 h-12 rounded-full object-cover" />
+                <li
+                  key={post._id}
+                  className="border rounded-lg p-4 shadow-md flex items-start gap-4 bg-white"
+                >
+                  <Image
+                    src={post?.avatar || "/default-avatar.png"}
+                    alt="User Avatar"
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
 
                   <div className="flex flex-col w-full">
                     <div className="flex justify-between items-center">
                       <h3 className="text-sm font-semibold">{post.name}</h3>
-                      <p className="text-gray-500 text-xs">{new Date(post.date).toLocaleDateString()}</p>
+                      <p className="text-gray-500 text-xs">
+                        {new Date(post.date).toLocaleDateString()}
+                      </p>
                     </div>
                     <p className="text-gray-700 mt-2">{post.text}</p>
 
                     <div className="flex items-center gap-2 mt-2">
-                      <button onClick={() => onclickLike(post._id)} className="flex items-center gap-1 bg-[#1e293b] text-white p-2 rounded-md text-sm hover:bg-gray-700">
+                      <button
+                        onClick={() => onclickLike(post._id)}
+                        className="flex items-center gap-1 bg-[#1e293b] text-white p-2 rounded-md text-sm hover:bg-gray-700"
+                      >
                         <AiFillLike /> Like
                       </button>
-                      <button onClick={() => onclickDislike(post._id)} className="flex items-center gap-1 bg-[#1e293b] text-white p-2 rounded-md text-sm hover:bg-gray-700">
+                      <button
+                        onClick={() => onclickDislike(post._id)}
+                        className="flex items-center gap-1 bg-[#1e293b] text-white p-2 rounded-md text-sm hover:bg-gray-700"
+                      >
                         <AiFillDislike /> Dislike
                       </button>
                       <button className="bg-[#14b8a6] text-white px-3 py-2 rounded-md text-sm">
-                      
-                        <Link href={`/posts/${post?._id}`}>
-                        Discussion
-                        </Link>
+                        <Link href={`/posts/${post?._id}`}>Discussion</Link>
                       </button>
 
                       {data?._id === post.user && (

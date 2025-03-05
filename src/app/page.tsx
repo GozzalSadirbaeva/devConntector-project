@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 
 function Home() {
-  let router = useRouter();
+  const router = useRouter();
   if (localStorage.getItem("token")) {
     router.push("/dashboard");
   }

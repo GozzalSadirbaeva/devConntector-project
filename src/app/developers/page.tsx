@@ -1,6 +1,7 @@
 "use client";
 import useFetch from "@/hooks/useFetch";
 import { DeveloperInterface } from "@/interface/user";
+import Image from "next/image";
 import Link from "next/link";
 import { TiTick } from "react-icons/ti";
 
@@ -26,10 +27,12 @@ function Developers() {
               >
                 <div className="flex gap-10">
                   <div className="py-6">
-                    <img
-                      src={developer?.user?.avatar}
-                      alt={developer?.user?.name}
-                      className="w-[150px] rounded-full"
+                    <Image
+                      src={developer?.user?.avatar || "/default-avatar.png"}
+                      alt={developer?.user?.name || "User avatar"}
+                      width={150}
+                      height={150}
+                      className="rounded-full"
                     />
                   </div>
 

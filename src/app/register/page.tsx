@@ -2,6 +2,7 @@
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 function Register() {
   const route = useRouter();
@@ -16,7 +17,7 @@ function Register() {
     if (token) {
       route.push("/dashboard");
     }
-  }, []);
+  }, [route]); 
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +28,7 @@ function Register() {
     }
 
     try {
-      const response = await register(name, email, password);
-      // console.log(response, "kkkkkkkkkkkkkkkkkkkkkk");
+      await register(name, email, password); 
     } catch (err) {
       console.error("Registration failed:", err);
     }
@@ -37,7 +37,7 @@ function Register() {
   return (
     <div className="flex gap-[130px] max-w-[1440px] w-full mx-auto my-0">
       <div>
-        <img src="/sign9.avif" alt="" className="pl-20" />
+        <Image src="/sign9.avif" alt="Signup Image" width={800} height={500} className="pl-20" />
       </div>
       <div className="bg-[#7ba1c392] px-10 py-3 rounded-lg mt-20 mb-10 pt-8 mr-20 ">
         <h2 className="text-2xl text-center p-4 font-semibold text-[#0f3352]">

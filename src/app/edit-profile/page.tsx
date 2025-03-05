@@ -1,7 +1,6 @@
 "use client";
 
 import useFetch from "@/hooks/useFetch";
-import { ProfileData } from "@/interface/profileData";
 import { DeveloperInterface } from "@/interface/user";
 import { baseUrl } from "@/utils/url";
 import axios from "axios";
@@ -13,7 +12,6 @@ const EditProfile = () => {
   const router = useRouter();
   const {
     data: profile,
-    loading,
   } = useFetch<DeveloperInterface>("profile/me");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<string | undefined>("");
@@ -44,14 +42,16 @@ const EditProfile = () => {
     { value: "other", label: "Other" },
   ];
   useEffect(() => {
-    setStatus(profile?.status);
-    setCompany(profile?.company);
-    setSkills(profile?.skills);
-    setWebsite(profile?.website);
-    setLocation(profile?.location);
-    setGithubusername(profile?.githubusername);
-    setBio(profile?.bio);
-  }, [loading]);
+    if (profile) {
+      setStatus(profile.status);
+      setCompany(profile.company);
+      setSkills(profile.skills);
+      setWebsite(profile.website);
+      setLocation(profile.location);
+      setGithubusername(profile.githubusername);
+      setBio(profile.bio);
+    }
+  }, [profile]); 
 
   const createProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +66,6 @@ const EditProfile = () => {
           },
         }
       );
-      // console.log("Profile created:", res.data);
       if (res.status === 200) {
         router.push("/dashboard");
       }

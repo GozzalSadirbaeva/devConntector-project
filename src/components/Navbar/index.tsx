@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 
 function Navbar() {
-  const [token, setToken] = useState<any>("");
+  const [token, setToken] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -38,7 +38,7 @@ function Navbar() {
       <Link
         className={`${
           pathname === "/" ? "active" : ""
-        }text-gray-100 text-2xl font-bold `}
+        } text-gray-100 text-2xl font-bold `}
         href={"/"}
       >
         {"</> "}DevConnector

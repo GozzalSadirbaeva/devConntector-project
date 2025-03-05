@@ -1,5 +1,6 @@
 "use client";
 import useAuth from "@/hooks/useAuth";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -19,7 +20,13 @@ function Login() {
     <div>
       <div className="flex max-w-[1440px] w-full mx-auto my-0">
         <div>
-          <img src="/login4.jpg" alt="" className="w-[90%]" />
+          <Image
+            src="/login4.jpg"
+            alt="Login image"
+            width={900} 
+            height={900}
+            className="w-[90%]"
+          />
         </div>
         <div className="bg-[#7ba1c392] px-10 py-5 rounded-lg mt-20 mb-10 pt-14 mr-20">
           <h2 className="text-2xl text-center p-4 font-semibold text-[#0f3352]">

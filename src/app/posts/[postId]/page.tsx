@@ -1,8 +1,9 @@
 "use client";
 import { baseUrl } from "@/utils/url";
 import axios from "axios";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 
 interface Post {
@@ -28,10 +29,9 @@ const DetailPage: React.FC = () => {
   const [comment, setComment] = useState<string>("");
   const [info, setInfo] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-
   const router = useRouter();
 
-  const fetchPostData = async () => {
+  const fetchPostData = useCallback(async () => {
     try {
       const res = await axios.get(`${baseUrl}posts/${postId}`, {
         headers: {
@@ -44,11 +44,11 @@ const DetailPage: React.FC = () => {
     } catch (error) {
       console.error("Error fetching post data:", error);
     }
-  };
+  }, [postId]); 
 
   useEffect(() => {
     fetchPostData();
-  }, []);
+  }, [fetchPostData]); 
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,15 +99,18 @@ const DetailPage: React.FC = () => {
 
       <div className="border rounded-lg p-4 shadow-md bg-white">
         <div className="flex items-center gap-4">
-          <img
+          <Image
             src={info?.avatar || "/default-avatar.png"}
             alt="User Avatar"
+            width={48} 
+            height={48}
             className="w-12 h-12 rounded-full object-cover"
           />
           <div>
             <h3 className="text-lg font-semibold">{info?.name}</h3>
             <p className="text-gray-500 text-sm">
-              Posted on {new Date(info?.date || "").toLocaleDateString()}
+              Posted on{" "}
+              {info?.date ? new Date(info.date).toLocaleDateString() : ""}
             </p>
           </div>
         </div>
@@ -159,9 +162,11 @@ const DetailPage: React.FC = () => {
             key={c._id}
             className="border p-4 rounded-lg shadow-md bg-white flex items-start gap-4 mb-4"
           >
-            <img
+            <Image
               src={c.avatar || "/default-avatar.png"}
               alt="User Avatar"
+              width={48}
+              height={48}
               className="w-12 h-12 rounded-full object-cover"
             />
             <div>
