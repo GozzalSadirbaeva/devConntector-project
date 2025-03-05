@@ -28,12 +28,15 @@ const AddEducation = () => {
           },
         }
       );
-      // console.log(res.data);
       if (res.status === 200) {
         router.push("/dashboard");
       }
     } catch (error: unknown) {
-      console.error(error.response?.data || error);
+      if (axios.isAxiosError(error)) {
+        console.error("API Error:", error.response?.data || error.message);
+      } else {
+        console.error("Unexpected Error:", error);
+      }
     }
   };
 
