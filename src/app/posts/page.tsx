@@ -25,59 +25,39 @@ function Posts() {
 
   const createNewPost = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Authentication token not found.");
+    }
+
+    const response = await axios.post(
+      `${baseUrl}posts`,
+      { text: createPost },
+      {
+        headers: {
+          "x-auth-token": token,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    setPosts([response.data, ...posts]);
+    setCreatePost("");
+  };
+
+  useEffect(() => {
+    const fetchPosts = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("Authentication token not found.");
       }
 
-      const response = await axios.post(
-        `${baseUrl}posts`,
-        { text: createPost },
-        {
-          headers: {
-            "x-auth-token": token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setPosts([response.data, ...posts]);
-      setCreatePost("");
-    } catch (error: unknown) {
-      console.error("Error creating post:", error);
-      setError(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to create post."
-      );
-    }
-  };
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Authentication token not found.");
-        }
-
-        const response = await axios.get(`${baseUrl}posts`, {
-          headers: {
-            "Content-Type": "application/json",
-            "x-auth-token": token,
-          },
-        });
-        setPosts(response.data);
-      } catch (error: unknown) {
-        console.error("Error fetching posts:", error);
-        setError(
-          error.response?.data?.message ||
-            error.message ||
-            "Failed to fetch posts."
-        );
-      } finally {
-        setLoading(false);
-      }
+      const response = await axios.get(`${baseUrl}posts`, {
+        headers: {
+          "Content-Type": "application/json",
+          "x-auth-token": token,
+        },
+      });
+      setPosts(response.data);
     };
 
     fetchPosts();
@@ -85,28 +65,19 @@ function Posts() {
   // console.log(posts);
 
   const deletePost = async (postId: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("Authentication token not found.");
-      }
-
-      await axios.delete(`${baseUrl}posts/${postId}`, {
-        headers: {
-          "x-auth-token": token,
-          "Content-Type": "application/json",
-        },
-      });
-
-      setPosts(posts.filter((post) => post._id !== postId));
-    } catch (error: unknown) {
-      console.error("Error deleting post:", error);
-      setError(
-        error.response?.data?.message ||
-          error.message ||
-          "Failed to delete post."
-      );
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("Authentication token not found.");
     }
+
+    await axios.delete(`${baseUrl}posts/${postId}`, {
+      headers: {
+        "x-auth-token": token,
+        "Content-Type": "application/json",
+      },
+    });
+
+    setPosts(posts.filter((post) => post._id !== postId));
   };
 
   if (loading)
@@ -117,30 +88,22 @@ function Posts() {
     );
 
   const onclickLike = async (postId: string) => {
-    try {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-      await axios.put(
-        `${baseUrl}posts/like/${postId}`,
-        {},
-        {
-          headers: { "x-auth-token": token },
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    await axios.put(
+      `${baseUrl}posts/like/${postId}`,
+      {},
+      {
+        headers: { "x-auth-token": token },
+      }
+    );
   };
 
   const onclickDislike = async (postId: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axios.put(`${baseUrl}posts/unlike/${postId}`, {
-        headers: { "x-auth-token": token },
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    const token = localStorage.getItem("token");
+    await axios.put(`${baseUrl}posts/unlike/${postId}`, {
+      headers: { "x-auth-token": token },
+    });
   };
 
   return (

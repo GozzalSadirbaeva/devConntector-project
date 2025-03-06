@@ -40,23 +40,20 @@ const CreateProfile = () => {
 
   const createProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const res = await axios.post(
-        `${baseUrl}profile`,
-        { company, location, status, website, skills, githubusername, bio },
-        {
-          headers: {
-            "x-auth-token": localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // console.log("Profile created:", res.data);
-      if (res.status === 200) {
-        router.push("/dashboard");
+
+    const res = await axios.post(
+      `${baseUrl}profile`,
+      { company, location, status, website, skills, githubusername, bio },
+      {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error: unknown) {
-      console.error("Error creating profile:", error.response?.data || error);
+    );
+    // console.log("Profile created:", res.data);
+    if (res.status === 200) {
+      router.push("/dashboard");
     }
   };
 

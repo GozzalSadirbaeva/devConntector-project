@@ -10,9 +10,7 @@ import { useEffect, useState } from "react";
 
 const EditProfile = () => {
   const router = useRouter();
-  const {
-    data: profile,
-  } = useFetch<DeveloperInterface>("profile/me");
+  const { data: profile } = useFetch<DeveloperInterface>("profile/me");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<string | undefined>("");
   const [status, setStatus] = useState<string | undefined>("");
@@ -45,32 +43,28 @@ const EditProfile = () => {
     if (profile) {
       setStatus(profile.status);
       setCompany(profile.company);
-      setSkills(profile.skills);
+      setSkills(profile.skills?.join(", "));
       setWebsite(profile.website);
       setLocation(profile.location);
       setGithubusername(profile.githubusername);
       setBio(profile.bio);
     }
-  }, [profile]); 
+  }, [profile]);
 
   const createProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const res = await axios.post(
-        `${baseUrl}profile`,
-        { company, location, status, website, skills, githubusername, bio },
-        {
-          headers: {
-            "x-auth-token": localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status === 200) {
-        router.push("/dashboard");
+    const res = await axios.post(
+      `${baseUrl}profile`,
+      { company, location, status, website, skills, githubusername, bio },
+      {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error: unknown) {
-      console.error("Error creating profile:", error.response?.data || error);
+    );
+    if (res.status === 200) {
+      router.push("/dashboard");
     }
   };
 

@@ -16,23 +16,19 @@ const AddExperience = () => {
 
   const addexp = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const res = await axios.put(
-        `${baseUrl}profile/experience`,
-        { title, company, from, to },
-        {
-          headers: {
-            "x-auth-token": localStorage.getItem("token"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // console.log( res.data);
-      if (res.status === 200) {
-        router.push("/dashboard");
+
+    const res = await axios.put(
+      `${baseUrl}profile/experience`,
+      { title, company, from, to },
+      {
+        headers: {
+          "x-auth-token": localStorage.getItem("token"),
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error: unknown) {
-      console.error( error.response?.data || error);
+    );
+    if (res.status === 200) {
+      router.push("/dashboard");
     }
   };
 
