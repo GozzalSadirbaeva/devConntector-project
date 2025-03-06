@@ -18,8 +18,8 @@ interface Post {
 
 function Posts() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [loading] = useState(true);
+  const [error] = useState("");
   const [createPost, setCreatePost] = useState<string>("");
   const { data } = useFetch<{ _id: string; name: string }>("auth");
 
